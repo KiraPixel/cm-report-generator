@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-cashing
+  namespace: prd-cm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: report-generator
+  template:
+    metadata:
+      labels:
+        app: report-generator
+    spec:
+      containers:
+        - name: report-generator
+          image: ghcr.io/kirapixel/report-generator:20250905131759
+          envFrom:
+            - secretRef:
+                name: flask-cm-spectr-secret

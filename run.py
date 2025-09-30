@@ -6,7 +6,7 @@ from app import job
 
 
 int_level=logging.INFO
-if os.getenv('DEV', 0):
+if os.getenv('DEV', 0) == 1:
     int_level = logging.DEBUG
 
 logging.basicConfig(

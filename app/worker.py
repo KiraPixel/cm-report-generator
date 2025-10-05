@@ -20,7 +20,10 @@ def start(reportQuery: Reports, report: ReportObject, session: Session, report_i
 
     if need_send_to_mail:
         report_instance.send_to_mail()
-    return None
+
+    session.close()
+
+    return True
 
 
 

@@ -49,9 +49,10 @@ def close_with_error(session: SessionLocal, report_object: Reports, error_text):
 
 def create_new_worker(report_query: Reports, report_instance: ReportObject, not_api_report=True):
     try:
+        SessionWorker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         thread = threading.Thread(
             target=worker.start,
-            args=(report_query, report_instance, SessionLocal(), None, None, None, not_api_report),
+            args=(report_query, report_instance, SessionWorker(), None, None, None, not_api_report),
             name=f"Worker-Thread-{report_query.id}"
         )
         thread.daemon = True

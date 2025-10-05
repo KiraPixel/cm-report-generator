@@ -62,10 +62,11 @@ class ReportObject:
         self.get_user()
         if not self.user:
             logger.error(f"Пользователь с username={self.owner_name} не найден")
+            self.start_date = now_unix_time()
             self.finish_processing(False, 'User is not found')
             return
 
-        self.start_date = my_time.now_unix_time()
+        self.start_date = now_unix_time()
         logger.info(f"Начало обработки отчета id={self.id}, status=processing")
         self.update_status('processing')
         if self.isRoutineReport:
@@ -112,7 +113,7 @@ class ReportObject:
             self.isSuccess = True
             self.isValid = True
 
-        self.end_date = my_time.now_unix_time()
+        self.end_date = now_unix_time()
         self.percentage_completed = 100
         self.update_status('finish')
         self.update_to_db()

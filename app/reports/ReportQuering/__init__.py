@@ -10,7 +10,7 @@ from .main_storage import MainStorageReport
 from .main_summary import MainSummary
 from .main_transport import MainTransportReport
 from .voperator import VOperator
-from .wialon_main import WialonReport
+from .wialon import WialonReport
 from .wialon_offline import WialonOfflineReport
 from .with_address_wialon import WithAddressWialonReport
 from .main_transport_model import MainTransportModelReport

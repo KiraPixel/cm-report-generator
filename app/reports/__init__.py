@@ -13,33 +13,42 @@ from app.modules.my_time import now_unix_time
 logger = logging.getLogger('cm_report_generator')
 
 class ReportObject:
-    id = None
-    db_object = None
     name = None
-    localization_name = None
-    parameters = None
-    status = 'new'
-    start_date = None
-    updated_date = None
-    end_date = None
-    isRoutineReport = False
-    configuration = None
-    percentage_completed = 0
-    heavy_report = False
-    user: User = None
-    owner_name = None
-    isValid = False
-    isSuccess = None
     headers = None
-    values: list = []
-    db_session: Session = None
-    error = ''
+    heavy_report = None
+    localization_name = None
+    configuration = None
+    isRoutineReport = None
+    parameters = None
 
     def __init__(self, db_session: Session, report_id: int or None, username: str, parameters = None) -> None:
+        self.name = self.__class__.name if self.__class__.name else None
+        self.headers = list(self.__class__.headers) if self.__class__.headers else None
+        self.heavy_report = bool(self.__class__.heavy_report) if self.__class__.heavy_report else False
+        self.name = self.__class__.localization_name if self.__class__.localization_name else None
+        self.configuration = dict(self.__class__.configuration) if self.__class__.configuration else None
+        self.isRoutineReport = bool(self.__class__.isRoutineReport) if self.__class__.isRoutineReport else False
+        self.id = None
+        self.db_object = None
+        self.status = 'new'
+        self.start_date = None
+        self.updated_date = None
+        self.end_date = None
+        self.configuration = None
+        self.percentage_completed = 0
+        self.user: User = None
+        self.owner_name = None
+        self.isValid = False
+        self.isSuccess = None
+        self.db_session: Session = None
+        self.error = ''
+        self.values: list = []
+
         logger.info(f"Инициализация ReportObject с report_id={report_id}, username={username}")
         self.owner_name = username
         self.db_session = db_session
         self.parameters = parameters
+
         if not report_id:
             if not self.owner_name:
                 logger.error("Не указан username при создании нового отчета")

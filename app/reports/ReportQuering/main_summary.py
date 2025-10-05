@@ -34,7 +34,7 @@ class MainSummary(ReportObject):
                                 transport_model.name or '',
                                 transport_model.lift_type or '',
                                 transport_model.engine or '',
-                                transport.parser_1c or '',
+                                transport.parser_1c or 0,
                                 cesar_count or 0,
                                 wialon_count or 0
                                 ])

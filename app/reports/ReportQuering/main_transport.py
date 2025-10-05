@@ -31,5 +31,5 @@ class MainTransportReport(ReportObject):
                 transport.customer or '',
                 transport.customer_contact or '',
                 transport.manager or '',
-                transport.parser_1c or ''
+                transport.parser_1c or 0
             ])

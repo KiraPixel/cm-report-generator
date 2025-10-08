@@ -10,10 +10,10 @@ class VOperator(ReportObject):
 
     def processing(self):
         query = (self.db_session.query(Alert, Transport, Storage, TransportModel, AlertTypePresets)
-                 .join(Transport, Transport.uNumber == Alert.uNumber)
-                 .join(Storage, Transport.storage_id == Storage.ID)
-                 .join(TransportModel, Transport.model_id == TransportModel.id)
-                 .join(AlertTypePresets, AlertTypePresets.id == Transport.alert_preset)
+                 .outerjoin(Transport, Transport.uNumber == Alert.uNumber)
+                 .outerjoin(Storage, Transport.storage_id == Storage.ID)
+                 .outerjoin(TransportModel, Transport.model_id == TransportModel.id)
+                 .outerjoin(AlertTypePresets, AlertTypePresets.id == Transport.alert_preset)
                  .filter(Alert.status == 0).all())
 
         for row in query:
@@ -25,17 +25,17 @@ class VOperator(ReportObject):
 
             alert, transport, storage, transport_model, alert_type = row
             self.values.append([
-                my_time.unix_to_moscow_time(alert.date) or '',
-                alert.uNumber or '',
-                alert.type or '',
-                alert.data or '',
-                alert.comment or '',
-                alert.comment_editor or '',
-                storage.region or '',
-                storage.name or '',
-                transport_model.name or '',
-                transport.manager or '',
-                transport.customer or '',
-                alert_type.id or '',
-                alert_type.preset_name or '',
+                my_time.unix_to_moscow_time(alert.date) if alert and alert.date else '',
+                alert.uNumber if alert else '',
+                alert.type if alert else '',
+                alert.data if alert else '',
+                alert.comment if alert else '',
+                alert.comment_editor if alert else '',
+                storage.region if storage else '',
+                storage.name if storage else '',
+                transport_model.name if transport_model else '',
+                transport.manager if transport else '',
+                transport.customer if transport else '',
+                alert_type.id if alert_type else '',
+                alert_type.preset_name if alert_type else '',
             ])

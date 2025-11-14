@@ -1,4 +1,4 @@
-name: Build, Push and Update Deployment
+name: Build and Push
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
   packages: write
 
 jobs:
@@ -33,16 +33,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ghcr.io/kirapixel/cm-report-generator:${{ env.TAG }}
-
-    - name: Update deployment.yaml with new image tag
-      run: |
-        sed -i "s|image: ghcr.io/kirapixel/cm-report-generator:.*|image: ghcr.io/kirapixel/cm-report-generator:${{ env.TAG }}|g" deploy/deployment.yaml
-
-    - name: Commit and push deployment update
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add deploy/deployment.yaml
-        git commit -m "Update image tag to ${{ env.TAG }}"
-        git push
+        tags: ghcr.io/kirapixel/cm-report-generator:${{ env.TAG }},ghcr.io/kirapixel/cm-report-generator:latest

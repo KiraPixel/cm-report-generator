@@ -6,7 +6,7 @@ from app import job
 
 
 int_level=logging.INFO
-if os.getenv('DEV', 0) == 1:
+if os.getenv('DEV', '0') == '1':
     int_level = logging.DEBUG
 
 logging.basicConfig(
@@ -21,6 +21,7 @@ logger = logging.getLogger('cm_report_generator')
 
 if __name__ == "__main__":
     logger.info("Запуск планировщика задач...")
+    logger.debug("ВНИМАНИЕ! ЗАПУСК В DEBUG РЕЖИМЕ!")
     while True:
         logger.info("Попытка получение новых репортов.")
         job.work()

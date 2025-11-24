@@ -5,17 +5,6 @@ from app.modules.my_time import now_unix_time
 
 geolocator = Nominatim(user_agent="KiraPixel1")
 
-
-def get_address(x, y):
-    if x == 0 or y == 0:
-        return None
-    try:
-        location = geolocator.reverse((x, y), exactly_one=True)
-        return location
-    except:
-        return f"Convert error"
-
-
 def get_address_decorator(coords=None):
     try:
         if coords is None:
@@ -27,7 +16,7 @@ def get_address_decorator(coords=None):
 
         location = geolocator.reverse((x, y), exactly_one=True, language='ru')
         if location is None:
-            return 'Ошибка определения'
+            return 'Convert error'
 
         address = location.raw.get('address', {})
 
@@ -52,13 +41,14 @@ def get_address_decorator(coords=None):
         return short_address
 
     except Exception as e:
-        return f'Ошибка определения адреса'
+        return f'Convert error'
 
 
 def get_address_from_coords(x, y, session):
     if not x or not y or x == 0 or y == 0:
         return "Convert error"
 
+    original_coords = x, y
     # Округляем до 4 знаков после запятой
     x = float(f"{float(x):.4f}")
     y = float(f"{float(y):.4f}")
@@ -70,21 +60,20 @@ def get_address_from_coords(x, y, session):
         Coord.pos_y.between(y - epsilon, y + epsilon)
     ).first()
 
-    current_time = int(now_unix_time())
+    if coord:
+        return coord.address
 
-    new_address = get_address(x, y)
+    current_time = int(now_unix_time())
+    new_address = get_address_decorator(original_coords)
     if new_address == "Convert error":
         return "Time out to convert"
-    if coord:
-        coord.address = new_address
-        coord.updated_time = current_time
-    else:
-        new_coord = Coord(
-            pos_x=x,
-            pos_y=y,
-            address=new_address,
-            updated_time=current_time
-        )
-        session.add(new_coord)
+
+    new_coord = Coord(
+        pos_x=x,
+        pos_y=y,
+        address=new_address,
+        updated_time=current_time
+    )
+    session.add(new_coord)
     session.commit()
     return new_address

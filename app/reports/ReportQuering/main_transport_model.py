@@ -3,8 +3,18 @@ from app.reports import ReportObject
 
 class MainTransportModelReport(ReportObject):
     name = "main_transport_model"
-    headers = ['ID', 'Тип направления', 'Название', 'Тип подъемника', 'Двигатель', 'Страна', 'Тип техники',
-               'Бренд', 'Модель']
+    headers = [
+        'ID',
+        'Тип направления',
+        'Название',
+        'Тип подъемника',
+        'Высота подъемника',
+        'Двигатель',
+        'Страна',
+        'Тип техники',
+        'Бренд',
+        'Модель'
+   ]
 
     def processing(self):
         query = self.db_session.query(
@@ -12,6 +22,7 @@ class MainTransportModelReport(ReportObject):
             TransportModel.type,
             TransportModel.name,
             TransportModel.lift_type,
+            TransportModel.lifting_height,
             TransportModel.engine,
             TransportModel.country,
             TransportModel.machine_type,
@@ -24,6 +35,7 @@ class MainTransportModelReport(ReportObject):
                 row.type or '',
                 row.name or '',
                 row.lift_type or '',
+                row.lifting_height or '',
                 row.engine or '',
                 row.country or '',
                 row.machine_type or '',

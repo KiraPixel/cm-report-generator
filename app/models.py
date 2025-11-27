@@ -97,6 +97,7 @@ class TransportModel(Base):
     machine_type = Column(String(100))
     brand = Column(String(100))
     model = Column(String(100))
+    lifting_height = Column(Float)
     transports = relationship('Transport', back_populates='transport_model',
                                  primaryjoin="Transport.model_id == TransportModel.id")
 

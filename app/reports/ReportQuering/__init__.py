@@ -1,6 +1,8 @@
 from app.reports import ReportObject
+from .axenta import AxentaReport
 from .cesar import CesarReport
 from .cesar_offline import CesarOfflineReport
+from .with_address_axenta import WithAddressAxentaReport
 from .with_address_cesar import WithAddressCesarReport
 from .custom_transport_transfer import CustomTransportTransferReport
 from .health_coordinates import HealthCoordinates
@@ -30,9 +32,12 @@ def get_report_class(report_name: str) -> ReportObject | None:
         'wialon': WialonReport,
         'wialon_offline': WialonOfflineReport,
         'cesar': CesarReport,
+        'cesar_offline': CesarOfflineReport,
+        'axenta': AxentaReport,
+        'axenta_offline': WithAddressCesarReport,
         'with_address_cesar': WithAddressCesarReport,
         'with_address_wialon': WithAddressWialonReport,
-        'cesar_offline': CesarOfflineReport,
+        'with_address_axenta': WithAddressAxentaReport,
         'health_coordinates': HealthCoordinates,
         'health_no_equip': HealthNoEquipReport,
         'health_no_lot': HealthNoLotReport,

@@ -10,6 +10,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
+    status = Column(Integer, default=1)
     username = Column(String(100), unique=True, nullable=False)
     password = Column(String(50), nullable=False)
     role = Column(Integer, nullable=False)
@@ -117,6 +118,22 @@ class CashCesar(Base):
     created_at = Column(Integer, default=0)
     device_type = Column(Text, nullable=False)
     linked = Column(Boolean, nullable=True, default=False)  # TINYINT(1) NULL DEFAULT '0'
+
+
+class CashAxenta(Base):
+    __tablename__ = 'cash_axenta'
+    id = Column(Integer, primary_key=True)
+    uid = Column(Integer, nullable=False, default=0)
+    nm = Column(Text, nullable=False)
+    pos_x = Column(Float, default=0.0)
+    pos_y = Column(Float, default=0.0)
+    gps = Column(Integer, default=0)
+    last_time = Column(Integer, default=0)
+    last_pos_time = Column(Integer, default=0)
+    connected_status = Column(Boolean, nullable=True, default=False)
+    cmd = Column(Text, nullable=True, default='')
+    sens = Column(Text, nullable=True, default='')
+    valid_nav = Column(Integer, nullable=True, default=1)
 
 
 class CashWialon(Base):

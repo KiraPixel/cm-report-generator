@@ -8,6 +8,8 @@ services:
     environment:
       SQLALCHEMY_DATABASE_URL: ${SQLALCHEMY_DATABASE_URL}
       DEV: ${DEV}
+    ports:
+      - "8000:8000"
     stdin_open: true
     tty: true
     restart: always

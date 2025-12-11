@@ -25,8 +25,6 @@ class CustomTransportTransferReport(ReportObject):
         region = self.parameters.get('region', 'Химки'),
         home_storage = self.parameters.get('only_home_storages', 0)
 
-        print(start_date, end_date, region, home_storage)
-
         query = reports_custom_transport_transfer(
             self.db_session,
             start_date=start_date[0],

@@ -18,17 +18,7 @@ from .with_address_wialon import WithAddressWialonReport
 from .main_transport_model import MainTransportModelReport
 
 
-def get_report_class(report_name: str) -> ReportObject | None:
-    """
-    Возвращает класс отчета по его названию или None, если отчет не найден.
-
-    Args:
-        report_name (str): Название отчета (например, 'wialon', 'cesar', 'main_summary').
-
-    Returns:
-        ReportObject: Класс отчета или None.
-    """
-    report_classes = {
+report_classes = {
         'wialon': WialonReport,
         'wialon_offline': WialonOfflineReport,
         'cesar': CesarReport,
@@ -49,5 +39,36 @@ def get_report_class(report_name: str) -> ReportObject | None:
         'custom_transport_transfer': CustomTransportTransferReport
     }
 
+def get_report_class(report_name: str) -> ReportObject | None:
+    """
+    Возвращает класс отчета по его названию или None, если отчет не найден.
+
+    Args:
+        report_name (str): Название отчета (например, 'wialon', 'cesar', 'main_summary').
+
+    Returns:
+        ReportObject: Класс отчета или None.
+    """
     return report_classes.get(report_name)
+
+
+def get_all_report_classes_info() -> list[dict]:
+    """
+    Возвращает список всех доступных классов отчетов с базовой информацией.
+
+    Returns:
+        list[dict]: Список словарей с инфой о каждом классе отчета.
+    """
+    report_list = []
+    for key, cls in report_classes.items():
+        info = {
+            "report_name": key,
+            "localization_name": getattr(cls, "localization_name", None),
+            "headers": getattr(cls, "headers", None),
+            "isRoutineReport": bool(getattr(cls, "isRoutineReport", False)),
+            "heavy_report": bool(getattr(cls, "heavy_report", False)),
+            "configuration": getattr(cls, "configuration", None),
+        }
+        report_list.append(info)
+    return report_list
 

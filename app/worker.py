@@ -4,15 +4,16 @@ from app.models import Reports
 from app.reports import ReportObject
 
 
-def start(reportQuery: Reports, report: ReportObject, session: Session, report_id=None, username=None, parameters=None, need_send_to_mail=False):
-    if report_id is None:
-        report_id = reportQuery.id
+def start(reportQuery: Reports, report: ReportObject, session: Session, report_id=None, username=None, parameters=None, need_send_to_mail=False, is_api_request=False):
+    if not is_api_request:
         if report_id is None:
-            return False
-    if username is None:
-        username = reportQuery.username
+            report_id = reportQuery.id
+            if report_id is None:
+                return False
         if username is None:
-            return False
+            username = reportQuery.username
+            if username is None:
+                return False
     if parameters is None:
         parameters = report.parameters
 

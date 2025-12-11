@@ -33,6 +33,10 @@ def get_schedule_reports(session: SessionLocal):
     query = session.query(Reports).filter(Reports.status == 'schedule').all()
     return query
 
+def get_progress_reports(session: SessionLocal):
+    query = session.query(Reports).filter(Reports.status == 'processing').all()
+    return query
+
 def close_with_error(session: SessionLocal, report_object: Reports, error_text):
     try:
         report_object.status = 'error'
@@ -70,9 +74,11 @@ def work():
         new_report = get_new_reports(session)
         stopper_report = get_stopped_reports(session)
         schedule_report = get_schedule_reports(session)
+        progress_report = get_progress_reports(session)
         logger.info(f'Найдено новых отчетов: {len(new_report)}')
         logger.info(f'Найдено новых остановившихся: {len(stopper_report)}')
         logger.info(f'Найдено запланированных отчетов: {len(schedule_report)}')
+        logger.info(f'Всего отчетов в работе: {len(progress_report)}')
 
         for report in new_report:
             report_class = get_report_class(report.type)

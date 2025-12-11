@@ -25,7 +25,7 @@ class ReportObject:
         self.name = self.__class__.name if self.__class__.name else None
         self.headers = list(self.__class__.headers) if self.__class__.headers else None
         self.heavy_report = bool(self.__class__.heavy_report) if self.__class__.heavy_report else False
-        self.name = self.__class__.localization_name if self.__class__.localization_name else None
+        self.localization_name = self.__class__.localization_name if self.__class__.localization_name else None
         self.configuration = dict(self.__class__.configuration) if self.__class__.configuration else None
         self.isRoutineReport = bool(self.__class__.isRoutineReport) if self.__class__.isRoutineReport else False
         self.id = None
@@ -44,7 +44,7 @@ class ReportObject:
         self.error = ''
         self.values: list = []
 
-        logger.info(f"Инициализация ReportObject с report_id={report_id}, username={username}")
+        logger.info(f"Инициализация ReportObject {self.name} с report_id={report_id}, username={username}")
         self.owner_name = username
         self.db_session = db_session
         self.parameters = parameters
@@ -62,10 +62,12 @@ class ReportObject:
         self.get_from_db()
         if not self.db_object:
             logger.error(f"Отчета с id={self.id} не существует")
+            self.isSuccess = False
+            self.error = 'report not found'
             return
 
         if self.status == 'finish':
-            logger.error(f"Отчет {self.id} уже обработан")
+            logger.info(f"Отчет {self.id} уже обработан")
             return
 
         self.get_user()
@@ -151,6 +153,14 @@ class ReportObject:
             self.owner_name = self.db_object.username
             self.status = self.db_object.status
             self.parameters = self.db_object.parameters
+            if self.status == 'finish':
+                self.start_date = self.db_object.start_date
+                self.updated_date = self.db_object.updated_date
+                self.end_date = self.db_object.end_date
+                self.percentage_completed = self.db_object.percentage_completed
+                self.isSuccess = self.db_object.success
+                self.error = self.db_object.errors
+                self.isValid = True if self.error == '' else False
             logger.debug(f"Данные отчета id={self.id} успешно получены")
 
     def update_to_db(self):
@@ -184,6 +194,7 @@ class ReportObject:
             logger.warning(f"Отчет id={self.id} не валиден, JSON не сгенерирован")
             return None
         json_result = {
+            'headers': self.headers,
             'field': self.values,
         }
         result = {

@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from app import worker
 from app.reports import ReportObject
 from app.reports.ReportQuering import get_report_class, get_all_report_classes_info
+from app.reports.category import REPORT_CATEGORIES
 
 app = FastAPI(title="CM Report Generator", docs_url="/docs")
 
@@ -20,7 +21,7 @@ def get_session() -> sessionmaker:
     return SessionLocal
 
 class GenerateReportRequest(BaseModel):
-    type: str
+    report_name: str
     username: str
     parameters: Optional[Dict[str, Any]] = None
     send_to_mail: bool = False
@@ -28,10 +29,18 @@ class GenerateReportRequest(BaseModel):
 class ReportTypeInfo(BaseModel):
     report_name: str
     localization_name: Optional[str] = None
+    category: str
     headers: Optional[List[str]] = None
     isRoutineReport: bool = False
     heavy_report: bool = False
     configuration: Optional[dict] = None
+
+class ReportCategory(BaseModel):
+    id: str
+    name: str
+    localization_name: str
+    need_access: str
+    position: int
 
 class ReportModel(BaseModel):
     id: int
@@ -48,10 +57,25 @@ class ReportModel(BaseModel):
     parameters: Optional[Dict[str, Any]] = None
 
 
-@app.get("/report-types", response_model=List[ReportTypeInfo])
+@app.get("/report-list", response_model=List[ReportTypeInfo])
 def list_report_types():
     """Возвращает список доступных типов отчётов с базовой информацией"""
     return get_all_report_classes_info()
+
+@app.get("/report-categories", response_model=List[ReportCategory])
+def get_report_categories():
+    """Возвращает список категорий отчетов"""
+    categories = [
+        ReportCategory(
+            id=key,
+            name=value["name"],
+            localization_name=value["localization_name"],
+            need_access=value["need_access"],
+            position=value["position"]
+        )
+        for key, value in REPORT_CATEGORIES.items()
+    ]
+    return sorted(categories, key=lambda x: x.position)
 
 
 @app.get("/report-info/{report_id}", response_model=ReportModel)
@@ -91,9 +115,9 @@ def get_report_info(report_id: str=None):
 def generate_report(request: GenerateReportRequest, background_tasks: BackgroundTasks):
     session = get_session()
     try:
-        report_class = get_report_class(request.type)
+        report_class = get_report_class(request.report_name)
         if report_class is None:
-            raise HTTPException(400, detail="Invalid report type")
+            raise HTTPException(400, detail="Invalid report report_name")
 
         if report_class.configuration is not None:
             if request.parameters is None or not request.parameters:

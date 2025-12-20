@@ -1,8 +1,7 @@
 from app.models import TransportModel
 from app.reports import ReportObject
 
-class MainTransportModelReport(ReportObject):
-    name = "main_transport_model"
+class TransportModelReport(ReportObject):
     headers = [
         'ID',
         'Тип направления',
@@ -15,6 +14,9 @@ class MainTransportModelReport(ReportObject):
         'Бренд',
         'Модель'
    ]
+    name = "all_transport_model"
+    category = 'reports_operator'
+    localization_name = "Все модели ТС"
 
     def processing(self):
         query = self.db_session.query(

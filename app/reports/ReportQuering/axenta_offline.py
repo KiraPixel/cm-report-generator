@@ -4,8 +4,10 @@ from app.reports import ReportObject
 
 
 class AxentaOfflineReport(ReportObject):
-    name = "axenta_offline"
     headers = ['axenta_id', 'name', 'uid', 'last_time', 'last_pos_time', 'x', 'y']
+    name = "axenta_offline"
+    localization_name = 'Давно offlice (от 3 дней)'
+    category = 'axenta'
 
     def processing(self):
         three_days_ago = my_time.get_time_minus_three_days()
@@ -20,3 +22,5 @@ class AxentaOfflineReport(ReportObject):
                 row.pos_x or '',
                 row.pos_y or ''
             ])
+
+        self.filter_by_transport_access('name')

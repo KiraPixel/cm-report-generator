@@ -9,24 +9,30 @@ from app.modules import my_time, generate_excel_report
 from app.modules.location_module import get_address_from_coords
 from app.modules.mail_sender import send_email
 from app.modules.my_time import now_unix_time
+from app.modules.user_aceess.functionality_acccess import has_role_access
+from app.modules.user_aceess.transport import get_all_access_transport
+from app.reports.category import REPORT_CATEGORIES
 
 logger = logging.getLogger('cm_report_generator')
 
 class ReportObject:
-    name = None
     headers = None
-    heavy_report = None
+    name = None
     localization_name = None
+    category = None
     configuration = None
+    heavy_report = None
     isRoutineReport = None
     parameters = None
 
     def __init__(self, db_session: Session, report_id: int or None, username: str, parameters = None) -> None:
         self.name = self.__class__.name if self.__class__.name else None
+        self.localization_name = self.__class__.localization_name if self.__class__.localization_name else None
+        self.category = self.__class__.category if self.__class__.category else "default"
+        self.category_obj = REPORT_CATEGORIES.get(self.category, REPORT_CATEGORIES["default"])
+        self.configuration = dict(self.__class__.configuration) if self.__class__.configuration else None
         self.headers = list(self.__class__.headers) if self.__class__.headers else None
         self.heavy_report = bool(self.__class__.heavy_report) if self.__class__.heavy_report else False
-        self.localization_name = self.__class__.localization_name if self.__class__.localization_name else None
-        self.configuration = dict(self.__class__.configuration) if self.__class__.configuration else None
         self.isRoutineReport = bool(self.__class__.isRoutineReport) if self.__class__.isRoutineReport else False
         self.id = None
         self.db_object = None
@@ -75,6 +81,13 @@ class ReportObject:
             logger.error(f"Пользователь с username={self.owner_name} не найден")
             self.start_date = now_unix_time()
             self.finish_processing(False, 'User is not found')
+            return
+
+        access = has_role_access(self.db_session, self.user, self.category_obj['need_access'])
+        if not access:
+            logger.error(f"У пользователя {self.user.username} нет прав {self.category_obj['need_access']} для отчета '{self.localization_name}'")
+            self.start_date = now_unix_time()
+            self.finish_processing(False, 'User has not access')
             return
 
         self.start_date = now_unix_time()
@@ -179,6 +192,9 @@ class ReportObject:
         self.db_session.commit()
         logger.debug(f"Данные отчета id={self.id} успешно обновлены")
 
+    def get_transport_access(self):
+        return get_all_access_transport(self.db_session, self.user)
+
     def to_xlsx(self):
         logger.debug(f"Генерация XLSX для отчета id={self.id}")
         if not self.isValid:
@@ -260,3 +276,18 @@ class ReportObject:
                 time.sleep(5)  # SLEEP_INTERVAL
         logger.error(f"Не удалось получить адрес после 50 попыток для координат ({x}, {y})")
         return "Error convert"  # DEFAULT_ADDRESS
+
+    def filter_by_transport_access(self, u_number_header: str) -> None:
+        if not self.headers or not self.values:
+            return
+
+        if u_number_header not in self.headers:
+            raise ValueError(f"Колонка '{u_number_header}' не найдена в headers")
+
+        access_list = set(self.get_transport_access())
+        u_number_index = self.headers.index(u_number_header)
+
+        self.values = [
+            row for row in self.values
+            if len(row) > u_number_index and row[u_number_index] in access_list
+        ]

@@ -4,8 +4,11 @@ from app.reports import ReportObject
 
 
 class WialonReport(ReportObject):
-    name = "wialon"
     headers = ['wialon_id', 'uNumber', 'uid', 'last_time', 'last_pos_time', 'x', 'y']
+    name = "wialon"
+    category = 'wialon'
+    localization_name = "Весь транспорт"
+
 
     def processing(self):
         query = self.db_session.query(CashWialon).all()
@@ -19,3 +22,5 @@ class WialonReport(ReportObject):
                 row.pos_x or '',
                 row.pos_y or ''
             ])
+
+        self.filter_by_transport_access('uNumber')

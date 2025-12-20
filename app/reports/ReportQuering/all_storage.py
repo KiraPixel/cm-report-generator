@@ -2,9 +2,11 @@ from app.models import Storage
 from app.reports import ReportObject
 
 
-class MainStorageReport(ReportObject):
-    name = "main_storage"
+class StorageReport(ReportObject):
     headers = ['ID', 'Название', 'Тип', 'Регион', 'Адрес', 'Организация']
+    name = "all_storage"
+    localization_name = "Все склады"
+    category = 'reports_operator'
 
     def processing(self):
         query = self.db_session.query(

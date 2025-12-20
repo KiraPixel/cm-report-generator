@@ -4,8 +4,10 @@ from app.reports import ReportObject
 
 
 class CesarOfflineReport(ReportObject):
-    name = "cesar_offline"
     headers = ['cesar_id', 'uNumber', 'PIN', 'last_time']
+    name = "cesar_offline"
+    localization_name = 'Давно offlice (от 3 дней)'
+    category = 'cesar'
 
     def processing(self):
         three_days_ago = my_time.get_time_minus_three_days()
@@ -17,3 +19,5 @@ class CesarOfflineReport(ReportObject):
                 row.pin or '',
                 my_time.unix_to_moscow_time(row.last_time) or ''
             ])
+
+        self.filter_by_transport_access('uNumber')

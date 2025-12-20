@@ -5,8 +5,10 @@ from app.reports import ReportObject
 
 
 class HealthNoEquipReport(ReportObject):
-    name = "health_no_equip"
     headers = ['uNumber', 'Кол-во wialon', 'Кол-во цезерей']
+    name = "health_no_equip"
+    localization_name = "Лоты без оборудования"
+    category = 'reports_operator'
 
     def processing(self):
         query = (self.db_session.query(Transport,
@@ -28,3 +30,5 @@ class HealthNoEquipReport(ReportObject):
                 cesar_count or 0,
                 wialon_count or 0
             ])
+
+        self.filter_by_transport_access('uNumber')

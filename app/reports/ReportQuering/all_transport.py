@@ -2,10 +2,12 @@ from app.models import Transport, TransportModel, Storage
 from app.reports import ReportObject
 
 
-class MainTransportReport(ReportObject):
-    name = "main_transport"
+class TransportReport(ReportObject):
     headers = ['ID', 'ID склада', 'Название склада', 'ID модели', 'Название модели', '№ Лота', 'Год выпуска', 'VIN', 'X', 'Y', 'Клиент',
                'Контакт клиента', 'Менеджер', 'parser_1c']
+    name = "all_transport"
+    category = 'reports_operator'
+    localization_name = "Все транспортные средства"
 
     def processing(self):
         query = (self.db_session.query(Transport, TransportModel, Storage)
@@ -33,3 +35,5 @@ class MainTransportReport(ReportObject):
                 transport.manager or '',
                 transport.parser_1c or 0
             ])
+
+        self.filter_by_transport_access('№ Лота')

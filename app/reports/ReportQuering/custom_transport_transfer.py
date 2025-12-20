@@ -3,8 +3,11 @@ from app.reports import ReportObject
 
 
 class CustomTransportTransferReport(ReportObject):
+    headers = ['номер_лота', 'склад', 'регион', 'тип', 'модель_техники',
+               'дата_перемещения', 'виалон_количество', 'виалон_онлайн', 'цезарь_количество', 'пресет_ид', 'пресет_имя']
     name = "custom_transport_transfer"
     localization_name = "Перемещения транспорта"
+    category = 'reports_operator'
     configuration = {
                         "date_from": {"type": "date", "label": "Дата от"},
                         "date_to": {"type": "date", "label": "Дата до"},
@@ -15,8 +18,6 @@ class CustomTransportTransferReport(ReportObject):
                         },
                         "only_home_storages": {"type": "checkbox", "label": "Только Домашние склады"}
                     }
-    headers = ['номер_лота', 'склад', 'регион', 'тип', 'модель_техники',
-               'дата_перемещения', 'виалон_количество', 'виалон_онлайн', 'цезарь_количество', 'пресет_ид', 'пресет_имя']
     isRoutineReport = True
 
     def processing(self):
@@ -48,4 +49,5 @@ class CustomTransportTransferReport(ReportObject):
                 row.get('пресет_имя', '')
             ])
 
+        self.filter_by_transport_access('номер_лота')
         self.finish_processing()

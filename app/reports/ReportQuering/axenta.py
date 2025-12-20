@@ -4,8 +4,10 @@ from app.reports import ReportObject
 
 
 class AxentaReport(ReportObject):
-    name = "axenta"
     headers = ['axenta_id', 'name', 'uid', 'last_time', 'last_pos_time', 'x', 'y']
+    name = "axenta"
+    localization_name = 'Весь транспорт'
+    category = 'axenta'
 
     def processing(self):
         query = self.db_session.query(CashAxenta).all()
@@ -19,3 +21,5 @@ class AxentaReport(ReportObject):
                 row.pos_x or '',
                 row.pos_y or ''
             ])
+
+        self.filter_by_transport_access('name')

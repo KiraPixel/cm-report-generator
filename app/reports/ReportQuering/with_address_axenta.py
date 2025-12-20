@@ -6,8 +6,10 @@ from app.reports import ReportObject
 
 
 class WithAddressAxentaReport(ReportObject):
-    name = "axenta_with_address"
     headers = ['axenta_id', 'uNumber', 'uid', 'last_time', 'last_pos_time', 'x', 'y', 'address']
+    name = "axenta_with_address"
+    localization_name = "Весь транспорт с адресом"
+    category = 'axenta'
     heavy_report = True
 
     def processing(self):
@@ -88,6 +90,4 @@ class WithAddressAxentaReport(ReportObject):
                 self.percentage_completed = main_percentage + (processed_without_address / total_count) * 100
                 self.update_to_db()
 
-        # Финальное обновление прогресса
-        self.percentage_completed = 100
-        self.update_to_db()
+        self.filter_by_transport_access('uNumber')

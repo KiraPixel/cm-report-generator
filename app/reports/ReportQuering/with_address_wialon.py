@@ -6,8 +6,10 @@ from app.reports import ReportObject
 
 
 class WithAddressWialonReport(ReportObject):
-    name = "wialon_with_address"
     headers = ['wialon_id', 'uNumber', 'uid', 'last_time', 'last_pos_time', 'x', 'y', 'address']
+    name = "wialon_with_address"
+    localization_name = "Весь транспорт с адресом"
+    category = 'wialon'
     heavy_report = True
 
     def processing(self):
@@ -75,3 +77,5 @@ class WithAddressWialonReport(ReportObject):
                 if processed_without_address != 0:
                     self.percentage_completed = main_percentage + ((processed_without_address / total_count) * 100)
                     self.update_to_db()
+
+        self.filter_by_transport_access('uNumber')

@@ -5,17 +5,17 @@ from .cesar_offline import CesarOfflineReport
 from .with_address_axenta import WithAddressAxentaReport
 from .with_address_cesar import WithAddressCesarReport
 from .custom_transport_transfer import CustomTransportTransferReport
-from .health_coordinates import HealthCoordinates
-from .health_no_equip import HealthNoEquipReport
-from .health_no_lot import HealthNoLotReport
-from .main_storage import MainStorageReport
-from .main_summary import MainSummary
-from .main_transport import MainTransportReport
+from .coordinates import HealthCoordinates
+from .no_equip import HealthNoEquipReport
+from .no_lot import HealthNoLotReport
+from .all_storage import StorageReport
+from .summary import Summary
+from .all_transport import TransportReport
 from .voperator import VOperator
 from .wialon import WialonReport
 from .wialon_offline import WialonOfflineReport
 from .with_address_wialon import WithAddressWialonReport
-from .main_transport_model import MainTransportModelReport
+from .all_transport_models import TransportModelReport
 
 
 report_classes = {
@@ -32,10 +32,10 @@ report_classes = {
         'health_no_equip': HealthNoEquipReport,
         'health_no_lot': HealthNoLotReport,
         'voperator': VOperator,
-        'main_summary': MainSummary,
-        'main_transport': MainTransportReport,
-        'main_transport_model': MainTransportModelReport,
-        'main_storage': MainStorageReport,
+        'summary': Summary,
+        'all_transport': TransportReport,
+        'all_transport_model': TransportModelReport,
+        'all_storage': StorageReport,
         'custom_transport_transfer': CustomTransportTransferReport
     }
 
@@ -64,6 +64,8 @@ def get_all_report_classes_info() -> list[dict]:
         info = {
             "report_name": key,
             "localization_name": getattr(cls, "localization_name", None),
+            "category":  getattr(cls, "category", None),
+            "localization_category": getattr(cls, "localization_category", None),
             "headers": getattr(cls, "headers", None),
             "isRoutineReport": bool(getattr(cls, "isRoutineReport", False)),
             "heavy_report": bool(getattr(cls, "heavy_report", False)),

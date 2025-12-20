@@ -4,8 +4,10 @@ from app.reports import ReportObject
 from sqlalchemy import func
 
 class WithAddressCesarReport(ReportObject):
-    name = "cesar_with_address"
     headers = ['cesar_id', 'uNumber', 'PIN', 'last_online', 'address', 'x', 'y']
+    name = "cesar_with_address"
+    localization_name = "Весь транспорт с адресом"
+    category = 'cesar'
     heavy_report = True
 
     def processing(self):
@@ -69,3 +71,4 @@ class WithAddressCesarReport(ReportObject):
             if processed_without_address % 20 == 0:
                 self.percentage_completed = main_percentage + ((processed_without_address / total_count) * 100)
                 self.update_to_db()
+        self.filter_by_transport_access('uNumber')

@@ -42,4 +42,4 @@ if __name__ == "__main__":
     while True:
         logger.info("Попытка получения новых репортов.")
         job.work()
-        time.sleep(10)
+        time.sleep(60)

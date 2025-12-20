@@ -4,8 +4,10 @@ from app.reports import ReportObject
 
 
 class WialonOfflineReport(ReportObject):
-    name = "wialon_offline"
     headers = ['wialon_id', 'uNumber', 'uid', 'last_time', 'last_pos_time', 'x', 'y']
+    name = "wialon_offline"
+    localization_name = "Давно offline (от 3 дней)"
+    category = 'wialon'
 
     def processing(self):
         three_days_ago = my_time.get_time_minus_three_days()
@@ -20,3 +22,5 @@ class WialonOfflineReport(ReportObject):
                 row.pos_x or '',
                 row.pos_y or ''
             ])
+
+        self.filter_by_transport_access('uNumber')

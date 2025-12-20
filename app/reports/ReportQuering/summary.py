@@ -4,9 +4,11 @@ from app.models import Transport, Storage, TransportModel, CashWialon, CashCesar
 from app.reports import ReportObject
 
 
-class MainSummary(ReportObject):
-    name = "main_summary"
+class Summary(ReportObject):
     headers = ['Тип', 'Регион', 'Склад', '№ Лота', 'Модель', 'Тип подъемника', 'Тип двигателя', 'parser_1c','Cesar Position', 'Wialon', 'Axenta']
+    name = "summary"
+    category = 'health'
+    localization_name = "Сводный отчет с оборудованием"
 
     def processing(self):
         query = self.db_session.query(Transport, Storage, TransportModel,
@@ -37,3 +39,5 @@ class MainSummary(ReportObject):
                                 wialon_count or 0,
                                 axenta_count or 0
                                 ])
+
+        self.filter_by_transport_access('№ Лота')

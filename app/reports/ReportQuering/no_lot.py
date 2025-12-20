@@ -3,8 +3,10 @@ from app.reports import ReportObject
 
 
 class HealthNoLotReport(ReportObject):
-    name = "health_no_lot"
     headers = ['Тип', 'Имя в системе', 'WialonID/PIN']
+    name = "health_no_lot"
+    localization_name = "Оборудование без лота"
+    category = 'health'
 
     def processing(self):
         transport_numbers = {t.uNumber for t in self.db_session.query(Transport).all()}
@@ -14,3 +16,5 @@ class HealthNoLotReport(ReportObject):
         for wialon in self.db_session.query(CashWialon).all():
             if not any(transport_number in wialon.nm for transport_number in transport_numbers):
                 self.values.append(['Wialon', wialon.nm or '', wialon.uid or ''])
+
+        self.filter_by_transport_access('Имя в системе')

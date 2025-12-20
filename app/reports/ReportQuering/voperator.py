@@ -4,9 +4,11 @@ from app.reports import ReportObject
 
 
 class VOperator(ReportObject):
-    name = "voperator"
     headers = ['Дата', '№ лота', 'Тип алерта', 'Информация', 'Комментарии', 'Автор комментария', 'Регион', 'Склад', 'Модель лота',
                'Менеджер', 'Аренда', 'ID пресета', 'Название пресета']
+    name = "voperator"
+    category = 'reports_operator'
+    localization_name = "Все открытые алерты"
 
     def processing(self):
         query = (self.db_session.query(Alert, Transport, Storage, TransportModel, AlertTypePresets)
@@ -39,3 +41,5 @@ class VOperator(ReportObject):
                 alert_type.id if alert_type else '',
                 alert_type.preset_name if alert_type else '',
             ])
+
+        self.filter_by_transport_access('№ Лота')

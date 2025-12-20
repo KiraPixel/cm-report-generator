@@ -4,8 +4,10 @@ from app.reports import ReportObject
 
 
 class CesarReport(ReportObject):
-    name = "cesar"
     headers = ['cesar_id', 'uNumber', 'PIN', 'created', 'last_online', 'x', 'y']
+    name = "cesar"
+    localization_name = 'Весь транспорт'
+    category = 'cesar'
 
     def processing(self):
         query = self.db_session.query(CashCesar).all()
@@ -19,3 +21,5 @@ class CesarReport(ReportObject):
                 row.pos_x or '',
                 row.pos_y or ''
             ])
+
+        self.filter_by_transport_access('uNumber')

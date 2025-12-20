@@ -1,5 +1,6 @@
 from app.reports import ReportObject
 from .axenta import AxentaReport
+from .axenta_offline import AxentaOfflineReport
 from .cesar import CesarReport
 from .cesar_offline import CesarOfflineReport
 from .with_address_axenta import WithAddressAxentaReport
@@ -24,7 +25,7 @@ report_classes = {
         'cesar': CesarReport,
         'cesar_offline': CesarOfflineReport,
         'axenta': AxentaReport,
-        'axenta_offline': WithAddressCesarReport,
+        'axenta_offline': AxentaOfflineReport,
         'with_address_cesar': WithAddressCesarReport,
         'with_address_wialon': WithAddressWialonReport,
         'with_address_axenta': WithAddressAxentaReport,

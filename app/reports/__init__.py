@@ -284,6 +284,9 @@ class ReportObject:
         if u_number_header not in self.headers:
             raise ValueError(f"Колонка '{u_number_header}' не найдена в headers")
 
+        if self.user.role==1:
+            return
+
         access_list = set(item.upper() for item in self.get_transport_access())
         u_number_index = self.headers.index(u_number_header)
 
